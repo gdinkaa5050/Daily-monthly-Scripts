@@ -44,7 +44,13 @@ group by tablespace_name;
 
 
 --Check any session blocking the other session
-SQL> select l.session_id,o.object_name,l.oracle_username,l.os_user_name 
+  col object_name for a30
+  col object_type for a20
+  col ORACLE_USERNAME for a50
+  col OS_USER_NAME for a50
+
+
+SQL> select l.session_id,o.object_name,o.object_type,l.oracle_username,l.os_user_name 
 from v$locked_object l, dba_objects o
 where o.object_id = l.object_id;
 
