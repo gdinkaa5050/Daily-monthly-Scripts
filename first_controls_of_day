@@ -68,3 +68,39 @@ SQL> select * from dba_jobs_running;
 $ rman target /
 
 RMAN> LIST BACKUP SUMMARY;
+
+--see RMAN running jobs and to kill them
+
+select sid, serial#, start_time, totalwork,  sofar, (sofar/totalwork) * 100 pct_done 
+from v$session_longops
+where totalwork > sofar
+AND opname like 'RMAN%';
+
+**For Single Instance:
+
+alter system kill session 'SID,SERIAL#' immediate;
+
+**For Oracle RAC (multi instance environments):
+
+alter system kill session 'SID,SERIAL#,@instance_id' immediate;
+
+
+--oracle show running job
+SELECT * FROM USER_SCHEDULER_RUNNING_JOBS;		-- connected scheme
+SELECT * FROM ALL_SCHEDULER_RUNNING_JOBS;		-- granted to connected scheme
+SELECT * FROM DBA_SCHEDULER_RUNNING_JOBS;		-- all jobs (DBA)
+
+-- More details (DBA)
+SELECT DISTINCT r.OWNER, r.JOB_NAME, r.JOB_SUBNAME, r.ELAPSED_TIME, r.CPU_USED,
+                d.ACTUAL_START_DATE
+FROM DBA_SCHEDULER_RUNNING_JOBS r
+         LEFT JOIN DBA_SCHEDULER_JOB_RUN_DETAILS d
+                   ON d.SLAVE_PID = r.SLAVE_PROCESS_ID
+ORDER BY r.OWNER, r.JOB_NAME, r.JOB_SUBNAME;
+
+select job_name,session_id
+from dba_scheduler_running_jobs;
+
+select log_date,job_name,status,run_duration
+from dba_scheduler_job_run_details;
+
