@@ -54,6 +54,13 @@ SQL> select l.session_id,o.object_name,o.object_type,l.oracle_username,l.os_user
 from v$locked_object l, dba_objects o
 where o.object_id = l.object_id;
 
+
+select s.sid,s.serial#,s.username,s.sql_id,q.sql_text
+from v$sqlarea q ,v$session s
+where s.sql_hash_value = q.hash_value
+and s.sql_address = q.address
+and s.username is not null;
+
 --for rac environment
 SQL> column object_name format a15
 SQL> column oracle_username format a10
