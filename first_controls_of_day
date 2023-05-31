@@ -54,7 +54,7 @@ SQL> select l.session_id,o.object_name,o.object_type,l.oracle_username,l.os_user
 from v$locked_object l, dba_objects o
 where o.object_id = l.object_id;
 
-
+--Find the Current SQL with SQL ID, Username and hash value , elapsed time, sql Text columns
 select s.sid,s.serial#,s.username,s.sql_id,q.sql_text
 from v$sqlarea q ,v$session s
 where s.sql_hash_value = q.hash_value
